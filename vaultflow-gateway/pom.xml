@@ -15,7 +15,6 @@
     <description>API Gateway — routes all inbound traffic to downstream services</description>
 
     <dependencies>
-        <!-- Spring Cloud Gateway runs on WebFlux (Netty), NOT servlet -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway-server-webmvc</artifactId>
