@@ -135,7 +135,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://transactions-db:5432/transactions_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
     depends_on:
       transactions-db:
@@ -161,7 +161,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://fraud-db:5432/fraud_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
     depends_on:
       fraud-db:
@@ -187,7 +187,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://notifications-db:5432/notifications_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       notifications-db:
         condition: service_healthy
@@ -210,6 +210,10 @@ services:
       - "8080:8080"
     environment:
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      SERVICES_ACCOUNTS_URL: http://vaultflow-accounts:8081
+      SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
+      SERVICES_NOTIFICATIONS_URL: http://vaultflow-notifications:8083
+      SERVICES_FRAUD_URL: http://vaultflow-fraud:8084
     depends_on:
       vaultflow-accounts:
         condition: service_healthy
