@@ -23,6 +23,13 @@ groq:
   api:
     key: ${GROQ_API_KEY:}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
 management:
   tracing:
     sampling:
