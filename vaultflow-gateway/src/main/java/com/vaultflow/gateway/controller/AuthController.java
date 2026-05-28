@@ -6,6 +6,7 @@ import com.vaultflow.gateway.dto.MeResponse;
 import com.vaultflow.gateway.dto.RefreshRequest;
 import com.vaultflow.gateway.security.RefreshToken;
 import com.vaultflow.gateway.service.JwtService;
+import com.vaultflow.gateway.service.LoginAttemptService;
 import com.vaultflow.gateway.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,19 +24,38 @@ public class AuthController {
     // Demo credential store — swap for a real UserRepository in production
     private static final Map<String, String> USERS = Map.of(
             "admin@vaultflow.com", "admin123",
-            "user@vaultflow.com", "user123"
+            "user@vaultflow.com",  "user123"
     );
 
-    private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
+    private final JwtService           jwtService;
+    private final RefreshTokenService  refreshTokenService;
+    private final LoginAttemptService  loginAttemptService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        String stored = USERS.get(request.getEmail());
-        if (stored == null || !stored.equals(request.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        String email = request.getEmail();
+
+        // ── Lockout check ─────────────────────────────────────────────────────
+        if (loginAttemptService.isLocked(email)) {
+            long seconds = loginAttemptService.secondsUntilUnlock(email);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body(Map.of(
+                            "error",   "Account temporarily locked",
+                            "message", "Too many failed login attempts. Try again in " + seconds + " seconds."
+                    ));
         }
-        return ResponseEntity.ok(buildResponse(request.getEmail()));
+
+        // ── Credential check ──────────────────────────────────────────────────
+        String stored = USERS.get(email);
+        if (stored == null || !stored.equals(request.getPassword())) {
+            loginAttemptService.loginFailed(email);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid credentials"));
+        }
+
+        // ── Success ───────────────────────────────────────────────────────────
+        loginAttemptService.loginSucceeded(email);
+        return ResponseEntity.ok(buildResponse(email));
     }
 
     /** Returns the identity of the currently authenticated caller. */
