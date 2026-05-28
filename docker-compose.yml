@@ -7,14 +7,14 @@ services:
     container_name: accounts-db
     environment:
       POSTGRES_DB: accounts_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5441:5432"
     volumes:
       - accounts_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d accounts_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d accounts_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,14 +24,14 @@ services:
     container_name: transactions-db
     environment:
       POSTGRES_DB: transactions_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5433:5432"
     volumes:
       - transactions_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d transactions_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d transactions_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,14 +41,14 @@ services:
     container_name: fraud-db
     environment:
       POSTGRES_DB: fraud_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5434:5432"
     volumes:
       - fraud_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d fraud_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d fraud_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -58,14 +58,14 @@ services:
     container_name: notifications-db
     environment:
       POSTGRES_DB: notifications_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5435:5432"
     volumes:
       - notifications_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d notifications_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d notifications_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -149,8 +149,8 @@ services:
       - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://accounts-db:5432/accounts_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
       SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
@@ -175,8 +175,8 @@ services:
       - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://transactions-db:5432/transactions_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
@@ -202,8 +202,8 @@ services:
       - "8084:8084"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://fraud-db:5432/fraud_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
@@ -229,8 +229,8 @@ services:
       - "8083:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://notifications-db:5432/notifications_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
@@ -255,6 +255,9 @@ services:
       - "8080:8080"
     environment:
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      JWT_SECRET: ${JWT_SECRET:-VmF1bHRGbG93U2VjcmV0S2V5MjAyNkZvckp3dEF1dGhlbnRpY2F0aW9uQW5kQXV0aG9yaXphdGlvbg==}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
       SERVICES_ACCOUNTS_URL: http://vaultflow-accounts:8081
       SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
       SERVICES_NOTIFICATIONS_URL: http://vaultflow-notifications:8083

@@ -5,9 +5,9 @@ spring:
   application:
     name: vaultflow-gateway
 jwt:
-  secret: VmF1bHRGbG93U2VjcmV0S2V5MjAyNkZvckp3dEF1dGhlbnRpY2F0aW9uQW5kQXV0aG9yaXphdGlvbg==
-  expiration-ms: 900000        # 15 minutes
-  refresh-expiration-ms: 604800000  # 7 days
+  secret: ${JWT_SECRET:VmF1bHRGbG93U2VjcmV0S2V5MjAyNkZvckp3dEF1dGhlbnRpY2F0aW9uQW5kQXV0aG9yaXphdGlvbg==}
+  expiration-ms: ${JWT_EXPIRATION_MS:900000}
+  refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
 
 groq:
   api:
