@@ -38,6 +38,18 @@ services:
     volumes:
       - fraud_data:/var/lib/postgresql/data
 
+  notifications-db:
+    image: postgres:15
+    container_name: notifications-db
+    environment:
+      POSTGRES_DB: notifications_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - notifications_data:/var/lib/postgresql/data
+
   # ── Kafka in KRaft mode (no Zookeeper needed) ────────────────────────────────
 
   kafka:
@@ -61,3 +73,4 @@ volumes:
   accounts_data:
   transactions_data:
   fraud_data:
+  notifications_data:
