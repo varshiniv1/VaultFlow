@@ -6,7 +6,8 @@ spring:
     name: vaultflow-gateway
 jwt:
   secret: VmF1bHRGbG93U2VjcmV0S2V5MjAyNkZvckp3dEF1dGhlbnRpY2F0aW9uQW5kQXV0aG9yaXphdGlvbg==
-  expiration-ms: 86400000
+  expiration-ms: 900000        # 15 minutes
+  refresh-expiration-ms: 604800000  # 7 days
 
 management:
   endpoints:
