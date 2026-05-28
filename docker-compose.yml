@@ -110,8 +110,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://accounts-db:5432/accounts_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
     depends_on:
       accounts-db:
+        condition: service_healthy
+      vaultflow-transactions:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
