@@ -9,6 +9,10 @@ jwt:
   expiration-ms: 900000        # 15 minutes
   refresh-expiration-ms: 604800000  # 7 days
 
+groq:
+  api:
+    key: ${GROQ_API_KEY:}
+
 management:
   endpoints:
     web:

@@ -19,6 +19,10 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+groq:
+  api:
+    key: ${GROQ_API_KEY:}
+
 management:
   endpoints:
     web:

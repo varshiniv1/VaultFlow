@@ -21,5 +21,6 @@ public class TransactionResponse {
     private String currency;
     private TransactionStatus status;
     private String description;
+    private String category;
     private LocalDateTime createdAt;
 }

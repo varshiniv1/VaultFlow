@@ -1,5 +1,6 @@
 package com.vaultflow.transactions.service;
 
+import com.vaultflow.transactions.ai.TransactionTagger;
 import com.vaultflow.transactions.dto.CreateTransactionRequest;
 import com.vaultflow.transactions.dto.TransactionResponse;
 import com.vaultflow.transactions.entity.Transaction;
@@ -22,6 +23,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final TransactionProducer transactionProducer;
+    private final TransactionTagger transactionTagger;
 
     public TransactionResponse createTransaction(CreateTransactionRequest request) {
         Transaction transaction = Transaction.builder()
@@ -35,6 +37,10 @@ public class TransactionService {
                 .build();
 
         Transaction saved = transactionRepository.save(transaction);
+
+        String category = transactionTagger.tag(saved);
+        saved.setCategory(category);
+        saved = transactionRepository.save(saved);
 
         transactionProducer.publish(TransactionEvent.builder()
                 .transactionId(saved.getId())
@@ -62,6 +68,13 @@ public class TransactionService {
                 .toList();
     }
 
+    public TransactionResponse retag(UUID id) {
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transaction not found: " + id));
+        transaction.setCategory(transactionTagger.tag(transaction));
+        return toResponse(transactionRepository.save(transaction));
+    }
+
     private TransactionResponse toResponse(Transaction t) {
         return TransactionResponse.builder()
                 .id(t.getId())
@@ -72,6 +85,7 @@ public class TransactionService {
                 .currency(t.getCurrency())
                 .status(t.getStatus())
                 .description(t.getDescription())
+                .category(t.getCategory())
                 .createdAt(t.getCreatedAt())
                 .build();
     }
