@@ -1,6 +1,8 @@
 package com.vaultflow.transactions.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vaultflow.transactions.event.TransactionEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -22,11 +24,17 @@ public class KafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public ProducerFactory<String, TransactionEvent> producerFactory(ObjectMapper objectMapper) {
+    public ProducerFactory<String, TransactionEvent> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+
+        // Build ObjectMapper directly — Boot 4 does not auto-configure one without starter-json.
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         // Pass serializer instances directly so Spring's classloader is used,
-        // avoiding ClassNotFoundException when Kafka tries to reflectively instantiate them.
+        // avoiding ClassNotFoundException when Kafka instantiates them via reflection.
         return new DefaultKafkaProducerFactory<>(
                 config,
                 new StringSerializer(),
