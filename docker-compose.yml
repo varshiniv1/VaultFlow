@@ -71,8 +71,6 @@ services:
       retries: 5
 
   # ── Kafka (KRaft) ────────────────────────────────────────────────────────────
-  # Advertises as "kafka:9092" so all containers reach it by service name.
-  # For local dev outside Docker add "127.0.0.1 kafka" to /etc/hosts once.
 
   kafka:
     image: apache/kafka:3.9.0
@@ -97,6 +95,15 @@ services:
       retries: 10
       start_period: 30s
 
+  # ── Tracing ──────────────────────────────────────────────────────────────────
+
+  zipkin:
+    image: openzipkin/zipkin:3
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    restart: unless-stopped
+
   # ── Spring Boot Services ──────────────────────────────────────────────────────
 
   vaultflow-accounts:
@@ -111,6 +118,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       accounts-db:
         condition: service_healthy
@@ -137,6 +145,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       transactions-db:
         condition: service_healthy
@@ -163,6 +172,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       GROQ_API_KEY: ${GROQ_API_KEY:-}
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       fraud-db:
         condition: service_healthy
@@ -188,6 +198,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       notifications-db:
         condition: service_healthy
@@ -214,6 +225,7 @@ services:
       SERVICES_TRANSACTIONS_URL: http://vaultflow-transactions:8082
       SERVICES_NOTIFICATIONS_URL: http://vaultflow-notifications:8083
       SERVICES_FRAUD_URL: http://vaultflow-fraud:8084
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     depends_on:
       vaultflow-accounts:
         condition: service_healthy
