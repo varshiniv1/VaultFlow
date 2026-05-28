@@ -16,6 +16,13 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
 management:
   tracing:
     sampling:
