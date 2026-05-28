@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'vaultflow-accounts'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['vaultflow-accounts:8081']
+
+  - job_name: 'vaultflow-transactions'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['vaultflow-transactions:8082']
+
+  - job_name: 'vaultflow-notifications'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['vaultflow-notifications:8083']
+
+  - job_name: 'vaultflow-fraud'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['vaultflow-fraud:8084']
+
+  - job_name: 'vaultflow-gateway'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['vaultflow-gateway:8080']
