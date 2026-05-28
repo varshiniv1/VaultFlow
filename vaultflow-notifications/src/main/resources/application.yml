@@ -4,15 +4,17 @@ server:
 spring:
   application:
     name: vaultflow-notifications
+  datasource:
+    url: jdbc:postgresql://localhost:5435/notifications_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
   kafka:
     bootstrap-servers: localhost:9092
-    consumer:
-      group-id: notifications-service
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
 
 management:
   endpoints:
