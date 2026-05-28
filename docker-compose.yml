@@ -300,6 +300,20 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  vaultflow-ui:
+    build:
+      context: ./vaultflow-ui
+      dockerfile: Dockerfile
+      args:
+        GATEWAY_URL: http://vaultflow-gateway:8080
+    container_name: vaultflow-ui
+    ports:
+      - "3001:3001"
+    depends_on:
+      vaultflow-gateway:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
   accounts_data:
   transactions_data:
