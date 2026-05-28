@@ -33,4 +33,9 @@ public class TransactionController {
     public List<TransactionResponse> getByAccount(@PathVariable UUID accountId) {
         return transactionService.getTransactionsByAccount(accountId);
     }
+
+    @PostMapping("/{id}/tag")
+    public TransactionResponse retag(@PathVariable UUID id) {
+        return transactionService.retag(id);
+    }
 }

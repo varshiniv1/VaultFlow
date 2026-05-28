@@ -1,6 +1,8 @@
 package com.vaultflow.fraud.service;
 
+import com.vaultflow.fraud.ai.FraudAnalyst;
 import com.vaultflow.fraud.dto.FraudAlertResponse;
+import com.vaultflow.fraud.dto.FraudExplanation;
 import com.vaultflow.fraud.entity.AlertStatus;
 import com.vaultflow.fraud.entity.FraudAlert;
 import com.vaultflow.fraud.event.TransactionEvent;
@@ -21,6 +23,7 @@ public class FraudCheckService {
     private static final BigDecimal HIGH_VALUE_THRESHOLD = new BigDecimal("10000.00");
 
     private final FraudAlertRepository fraudAlertRepository;
+    private final FraudAnalyst fraudAnalyst;
 
     public void evaluate(TransactionEvent event) {
         if (event.getAmount().compareTo(HIGH_VALUE_THRESHOLD) > 0) {
@@ -60,6 +63,12 @@ public class FraudCheckService {
                 .orElseThrow(() -> new IllegalArgumentException("Alert not found: " + id));
         alert.setStatus(AlertStatus.DISMISSED);
         return toResponse(fraudAlertRepository.save(alert));
+    }
+
+    public FraudExplanation explain(UUID id) {
+        FraudAlert alert = fraudAlertRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Alert not found: " + id));
+        return fraudAnalyst.explain(alert);
     }
 
     public FraudAlertResponse markReviewed(UUID id) {

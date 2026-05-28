@@ -136,6 +136,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
     depends_on:
       transactions-db:
         condition: service_healthy
@@ -161,6 +162,7 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
     depends_on:
       fraud-db:
         condition: service_healthy
@@ -206,6 +208,8 @@ services:
     container_name: vaultflow-gateway
     ports:
       - "8080:8080"
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
     depends_on:
       vaultflow-accounts:
         condition: service_healthy

@@ -41,6 +41,8 @@ public class Transaction {
 
     private String description;
 
+    private String category;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

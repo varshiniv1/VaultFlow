@@ -1,6 +1,7 @@
 package com.vaultflow.fraud.controller;
 
 import com.vaultflow.fraud.dto.FraudAlertResponse;
+import com.vaultflow.fraud.dto.FraudExplanation;
 import com.vaultflow.fraud.entity.AlertStatus;
 import com.vaultflow.fraud.service.FraudCheckService;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,10 @@ public class FraudAlertController {
     @PatchMapping("/{id}/review")
     public ResponseEntity<FraudAlertResponse> review(@PathVariable UUID id) {
         return ResponseEntity.ok(fraudCheckService.markReviewed(id));
+    }
+
+    @PostMapping("/{id}/explain")
+    public ResponseEntity<FraudExplanation> explain(@PathVariable UUID id) {
+        return ResponseEntity.ok(fraudCheckService.explain(id));
     }
 }
