@@ -1,0 +1,42 @@
+server:
+  port: ${PORT:8083}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: vaultflow-notifications
+  datasource:
+    url: jdbc:postgresql://localhost:5435/notifications_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+  kafka:
+    bootstrap-servers: localhost:9092
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

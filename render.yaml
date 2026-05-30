@@ -1,0 +1,140 @@
+services:
+  # Deploy in this order: transactions → accounts → notifications → fraud → gateway
+
+  - type: web
+    name: vaultflow-transactions
+    runtime: docker
+    dockerfilePath: ./vaultflow-transactions/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+        value: "0.0"
+      - key: SPRING_JPA_SHOWSQL
+        value: "false"
+      # Set these in the Render dashboard (Environment tab for this service):
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_KAFKA_BOOTSTRAPSERVERS
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_MECHANISM
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: web
+    name: vaultflow-accounts
+    runtime: docker
+    dockerfilePath: ./vaultflow-accounts/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SERVICES_TRANSACTIONS_URL
+        value: https://vaultflow-transactions.onrender.com
+      - key: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+        value: "0.0"
+      - key: SPRING_JPA_SHOWSQL
+        value: "false"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+
+  - type: web
+    name: vaultflow-notifications
+    runtime: docker
+    dockerfilePath: ./vaultflow-notifications/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+        value: "0.0"
+      - key: SPRING_JPA_SHOWSQL
+        value: "false"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_KAFKA_BOOTSTRAPSERVERS
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_MECHANISM
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG
+        sync: false
+
+  - type: web
+    name: vaultflow-fraud
+    runtime: docker
+    dockerfilePath: ./vaultflow-fraud/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+        value: "0.0"
+      - key: SPRING_JPA_SHOWSQL
+        value: "false"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_KAFKA_BOOTSTRAPSERVERS
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_MECHANISM
+        sync: false
+      - key: SPRING_KAFKA_PROPERTIES_SASL_JAAS_CONFIG
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+
+  - type: web
+    name: vaultflow-gateway
+    runtime: docker
+    dockerfilePath: ./vaultflow-gateway/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SERVICES_ACCOUNTS_URL
+        value: https://vaultflow-accounts.onrender.com
+      - key: SERVICES_TRANSACTIONS_URL
+        value: https://vaultflow-transactions.onrender.com
+      - key: SERVICES_NOTIFICATIONS_URL
+        value: https://vaultflow-notifications.onrender.com
+      - key: SERVICES_FRAUD_URL
+        value: https://vaultflow-fraud.onrender.com
+      - key: MANAGEMENT_TRACING_SAMPLING_PROBABILITY
+        value: "0.0"
+      - key: SPRING_JPA_SHOWSQL
+        value: "false"
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

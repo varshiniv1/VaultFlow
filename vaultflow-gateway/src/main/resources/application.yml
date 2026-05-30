@@ -1,0 +1,46 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: vaultflow-gateway
+  datasource:
+    url: jdbc:postgresql://localhost:5436/users_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: false
+jwt:
+  secret: ${JWT_SECRET:VmF1bHRGbG93U2VjcmV0S2V5MjAyNkZvckp3dEF1dGhlbnRpY2F0aW9uQW5kQXV0aG9yaXphdGlvbg==}
+  expiration-ms: ${JWT_EXPIRATION_MS:900000}
+  refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+
+groq:
+  api:
+    key: ${GROQ_API_KEY:}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

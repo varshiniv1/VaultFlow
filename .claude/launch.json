@@ -1,0 +1,47 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vaultflow-ui",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "vaultflow-ui",
+      "port": 3001
+    },
+    {
+      "name": "vaultflow-gateway",
+      "runtimeExecutable": "C:\\Users\\varsh\\.m2\\wrapper\\dists\\apache-maven-3.9.15\\9925cc1d\\bin\\mvn.cmd",
+      "runtimeArgs": ["spring-boot:run"],
+      "cwd": "vaultflow-gateway",
+      "port": 8080
+    },
+    {
+      "name": "vaultflow-accounts",
+      "runtimeExecutable": "C:\\Users\\varsh\\.m2\\wrapper\\dists\\apache-maven-3.9.15\\9925cc1d\\bin\\mvn.cmd",
+      "runtimeArgs": ["spring-boot:run"],
+      "cwd": "vaultflow-accounts",
+      "port": 8081
+    },
+    {
+      "name": "vaultflow-transactions",
+      "runtimeExecutable": "C:\\Users\\varsh\\.m2\\wrapper\\dists\\apache-maven-3.9.15\\9925cc1d\\bin\\mvn.cmd",
+      "runtimeArgs": ["spring-boot:run"],
+      "cwd": "vaultflow-transactions",
+      "port": 8082
+    },
+    {
+      "name": "vaultflow-notifications",
+      "runtimeExecutable": "C:\\Users\\varsh\\.m2\\wrapper\\dists\\apache-maven-3.9.15\\9925cc1d\\bin\\mvn.cmd",
+      "runtimeArgs": ["spring-boot:run"],
+      "cwd": "vaultflow-notifications",
+      "port": 8083
+    },
+    {
+      "name": "vaultflow-fraud",
+      "runtimeExecutable": "C:\\Users\\varsh\\.m2\\wrapper\\dists\\apache-maven-3.9.15\\9925cc1d\\bin\\mvn.cmd",
+      "runtimeArgs": ["spring-boot:run"],
+      "cwd": "vaultflow-fraud",
+      "port": 8084
+    }
+  ]
+}

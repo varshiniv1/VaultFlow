@@ -1,0 +1,66 @@
+server:
+  port: ${PORT:8081}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: vaultflow-accounts
+  datasource:
+    url: jdbc:postgresql://localhost:5441/accounts_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    validate-on-migrate: false
+
+services:
+  transactions:
+    url: http://localhost:8082
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      transactions:
+        sliding-window-size: 10
+        failure-rate-threshold: 50          # open after 50% failures
+        wait-duration-in-open-state: 30s    # try again after 30s
+        permitted-calls-in-half-open-state: 3
+        register-health-indicator: true
+  retry:
+    instances:
+      transactions:
+        max-attempts: 3
+        wait-duration: 500ms
+        retry-exceptions:
+          - org.springframework.web.client.ResourceAccessException
+  timelimiter:
+    instances:
+      transactions:
+        timeout-duration: 3s
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
